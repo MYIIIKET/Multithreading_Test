@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -13,32 +14,11 @@ public class Main {
     private static final List<Bus> buses = new ArrayList<>();
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         initBusStops();
         runBuses();
-        startObserver();
-    }
-
-    private static void startObserver() {
-        Observer observer = new Observer();
-        observer.setDaemon(true);
-        observer.start();
-    }
-
-    private static class Observer extends Thread {
-        public void run() {
-            while (true) {
-                boolean anyIsAlive = false;
-                for (int i = 0; i < amountOfBuses; i++) {
-                    if (buses.get(i).isAlive()) {
-                        anyIsAlive = true;
-                    }
-                }
-                if (!anyIsAlive) {
-                    executor.shutdown();
-                }
-            }
-        }
+        executor.shutdown();
+        executor.awaitTermination(1, TimeUnit.HOURS);
     }
 
     private static void runBuses() {

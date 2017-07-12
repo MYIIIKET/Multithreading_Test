@@ -1,5 +1,3 @@
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -9,7 +7,6 @@ public class BusStop {
 
     final Lock lock = new ReentrantLock();
     final Condition notFull = lock.newCondition();
-    final Condition notEmpty = lock.newCondition();
 
     private static final int stops = 5;
     final Thread[] buses = new Thread[stops];
@@ -30,7 +27,6 @@ public class BusStop {
                     break;
                 }
             }
-            notEmpty.signal();
         } finally {
             lock.unlock();
         }
